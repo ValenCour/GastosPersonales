@@ -18,5 +18,6 @@ curl -X POST http://localhost:8080/gastos \
     "id_usuario": 1,
     "monto": "1250.75",
     "medio_de_pago": "Tarjeta de Crédito",
+    "fecha": "2025-10-27T10:30:00Z",
     "categoria": "Entretenimiento"
 }'

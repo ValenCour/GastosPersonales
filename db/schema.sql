@@ -2,7 +2,7 @@ CREATE TYPE categoria_gasto AS ENUM ('Comida', 'Transporte', 'Entretenimiento', 
 
 CREATE TABLE usuarios (
     id_usuario SERIAL PRIMARY KEY,
-    nombre_usuario VARCHAR(50) UNIQUE NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     contraseña VARCHAR(50) NOT NULL
 );
