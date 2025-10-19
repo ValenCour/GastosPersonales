@@ -7,18 +7,18 @@ default: test
 # Target principal para correr los tests de forma aislada
 test:
 	@cd db/ && sqlc generate && cd ..
-	@docker compose up -d
 
-	@gnome-terminal --title="Servidor Go (Logs)" -- bash -c "\
+	@gnome-terminal --title="Servidor" -- bash -c "\
+		docker compose up -d ; \
 		export DB_SOURCE='postgres://postgres:postgres@localhost:5432/gastos_db?sslmode=disable'; \
 		go run main.go & \
-		sleep 7 ; \
+		sleep 3 ; \
 		read -p 'Presiona ENTER para terminar el servidor...'; \
 		docker compose down ; \
-		pkill -f "main" || true ; \
+		@bash -c "sudo lsof -ti :8080 | xargs -r sudo kill -9" ; \
 		exec bash"
 
-	@sleep 5
+	@sleep 2
 
 	@gnome-terminal --title="Cliente" -- bash -c "\
 		./prueba.sh; \
