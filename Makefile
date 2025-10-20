@@ -6,6 +6,7 @@ default: test
 
 # Target principal para correr los tests de forma aislada
 test:
+	@bash -c "sudo lsof -ti :8080 | xargs -r sudo kill -9"
 	@cd db/ && sqlc generate && cd ..
 
 	@gnome-terminal --title="Servidor" -- bash -c "\
