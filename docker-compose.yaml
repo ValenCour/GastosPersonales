@@ -1,15 +1,6 @@
 version: '3.8'
 
 services:
-  api:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      - DB_SOURCE=postgres://postgres:postgres@localhost:5432/gastos_db?sslmode=disable
-    depends_on:
-      - db
-
   db:
     image: postgres:15
     environment:
