@@ -87,7 +87,7 @@ curl -X POST http://localhost:8080/gastos \
 curl -X POST http://localhost:8080/gastos \
 -H "Content-Type: application/json" \
 -d '{
-    "id_usuario": 2,
+    "id_usuario": 1,
     "monto": "100.00",
     "medio_de_pago": "Transferencia",
     "fecha": "2025-01-01T12:00:00Z",
@@ -102,7 +102,7 @@ curl -X POST http://localhost:8080/gastos \
     "id_usuario": 1,
     "monto": "",
     "medio_de_pago": "Tarjeta de Débito",
-    "fecha": "",
+    "fecha": "2025-01-01T12:00:00Z",
     "categoria": "Otros"
 }'
 

@@ -13,13 +13,13 @@ test:
 		docker compose up -d ; \
 		export DB_SOURCE='postgres://postgres:postgres@localhost:5432/gastos_db?sslmode=disable'; \
 		go run main.go & \
-		sleep 3 ; \
+		sleep 4 ; \
 		read -p 'Presiona ENTER para terminar el servidor...'; \
 		docker compose down ; \
 		@bash -c "sudo lsof -ti :8080 | xargs -r sudo kill -9" ; \
 		exec bash"
 
-	@sleep 2
+	@sleep 3
 
 	@gnome-terminal --title="Cliente" -- bash -c "\
 		./prueba.sh; \
