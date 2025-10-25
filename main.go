@@ -28,6 +28,8 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	mux.Handle("/", http.FileServer(http.Dir("./public")))
+
 	mux.HandleFunc("/usuarios", handlers.UsuariosHandler)
 
 	mux.HandleFunc("/usuarios/", handlers.UsuariosIdHandler)

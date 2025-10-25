@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+var queries *sqlc.Queries
+
 func UsuariosHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -112,8 +114,6 @@ func usuarioValido(nombre, email, contraseña string) bool {
 		return false
 	}
 }
-
-var queries *sqlc.Queries
 
 func SetQueries(q *sqlc.Queries) {
 	queries = q

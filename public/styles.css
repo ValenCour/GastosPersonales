@@ -1,0 +1,6 @@
+body {
+  background-color: #1b1b1b;
+}
+h1, h2, h3, form, label{
+  color: rgb(83, 187, 83);
+}

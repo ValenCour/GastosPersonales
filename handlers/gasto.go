@@ -2,15 +2,12 @@ package handlers
 
 import (
 	sqlc "Tp3/db/generated"
-	views "Tp3/views"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/a-h/templ"
 )
 
 func GastosHandler(w http.ResponseWriter, r *http.Request) {
@@ -22,7 +19,6 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("Error al obtener gastos de la base", err)
 		}
-		templ.Handler(views.GastosPage(gastos)).ServeHTTP(w, r)
 
 		err = json.NewEncoder(w).Encode(gastos)
 		if err != nil {
