@@ -34,6 +34,10 @@ WHERE id_gasto = $1;
 -- name: ListGastos :many
 SELECT * FROM gastos;
 
+-- name: ListGastosId :many
+SELECT * FROM gastos
+WHERE id_usuario = $1;
+
 -- name: UpdateGasto :one
 UPDATE gastos
 SET monto = $2,

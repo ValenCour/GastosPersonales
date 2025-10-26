@@ -105,6 +105,40 @@ func UsuariosIdHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GastosPorUsuarioHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Método no permitido. Solo se acepta GET.", http.StatusMethodNotAllowed)
+		return
+	}
+	// Quitamos el prefijo "/usuarios/" -> queda "12/gastos"
+	tempPath := strings.TrimPrefix(r.URL.Path, "/usuarios/")
+	// Quitamos el sufijo "/gastos" -> queda "12"
+	id_str := strings.TrimSuffix(tempPath, "/gastos")
+
+	id, err := strconv.Atoi(id_str)
+	if err != nil {
+		http.Error(w, "ID de usuario inválido en la URL", http.StatusBadRequest)
+		return
+	}
+
+	gastos, err := queries.ListGastosId(r.Context(), int32(id))
+	if err != nil {
+		fmt.Println("Error al obtener gastos del usuario:", err)
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
+
+	if gastos == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte("[]"))
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Println(gastos)
+	json.NewEncoder(w).Encode(gastos)
+}
+
 func usuarioValido(nombre, email, contraseña string) bool {
 	if nombre != "" && email != "" && contraseña != "" {
 		fmt.Println("Usuario válido")

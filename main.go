@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	_ "github.com/lib/pq"
 )
@@ -32,7 +33,13 @@ func main() {
 
 	mux.HandleFunc("/usuarios", handlers.UsuariosHandler)
 
-	mux.HandleFunc("/usuarios/", handlers.UsuariosIdHandler)
+	mux.HandleFunc("/usuarios/", func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/gastos") {
+			handlers.GastosPorUsuarioHandler(w, r)
+		} else {
+			handlers.UsuariosIdHandler(w, r)
+		}
+	})
 
 	mux.HandleFunc("/gastos", handlers.GastosHandler)
 

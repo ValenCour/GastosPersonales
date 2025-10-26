@@ -7,11 +7,11 @@ const addGastoForm = document.getElementById('add-gasto-form');
 
 let usuarios = [];
 let gastos = [];
-let selectedUserId = null;
+let id_seleccionado = -1;
 
 document.addEventListener('DOMContentLoaded', () => {
     const renderUserOptions = () => {
-        userSelect.innerHTML = '<option value="">Seleccione un usuario</option>';
+        userSelect.innerHTML = '<option value="-1">Seleccione un usuario</option>';
         usuarios.forEach(user => {
             const option = document.createElement('option');
             option.value = user.id_usuario;
@@ -31,15 +31,51 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    const fetchGastosPorId = async (id) => {
+        gastos = [];
+        try {
+            const response = await fetch(API_URL_USUARIOS + "/" + id + "/" + "gastos");
+            if (!response.ok) throw new Error('Error al obtener gastos');
+            gastos = await response.json();
+        } catch (error) {
+            console.error(error);
+        }
+        renderGastosId(id);
+    };
+
+    const renderGastosId = (id) => {
+        gastosList.innerHTML = ''; 
+        if (id === -1) {
+            gastosList.innerHTML = '<p>Por favor, selecciona un usuario para ver sus gastos.</p>';
+            return;
+        }
+        // Ya no es necesario filtrar aquí, porque la API ya nos da los datos filtrados.
+        if (gastos.length === 0) {
+            gastosList.innerHTML = '<p>Este usuario no tiene gastos registrados.</p>';
+            return;
+        }
+
+        gastos.forEach(gasto => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span><strong>Categoría:</strong> ${gasto.categoria}</span>
+                <span><strong>Monto:</strong> $${gasto.monto}</span>
+                <span><strong>Fecha:</strong> ${new Date(gasto.fecha).toLocaleString()}</span>
+                <button class="delete-btn" data-id="${gasto.id_gasto}">Eliminar</button>
+            `;
+            gastosList.appendChild(li);
+        });
+    };
+
     userSelect.addEventListener('change', () => {
-        selectedUserId = userSelect.value;
-        renderGastos();
+        id_seleccionado = userSelect.value;
+        fetchGastosPorId(id_seleccionado);
     });
 
     addUserForm.addEventListener('submit', async (e) => {
         e.preventDefault(); // Evita que el formulario recargue la página
         
-        const newUser = {
+        const nuevo_usuario = {
             nombre_usuario: document.getElementById('name').value,
             email: document.getElementById('email').value,
             contraseña: document.getElementById('password').value
@@ -49,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(API_URL_USUARIOS, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newUser)
+                body: JSON.stringify(nuevo_usuario)
             });
 
             if (response.status === 201) {
@@ -63,9 +99,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    addGastoForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const nuevo_gasto = {
+            id_usuario:     parseInt(id_seleccionado),
+            monto:          document.getElementById('monto').value,
+            medio_de_pago:  document.getElementById('medio_de_pago').value,
+            fecha:          new Date(document.getElementById('fecha').value).toISOString(),
+            categoria:      document.getElementById('categoria').value
+        }
+
+        try {
+            const response = await fetch(API_URL_GASTOS, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevo_gasto)
+            });
+
+            if (response.status === 201) {
+                addGastoForm.reset();
+                fetchGastosPorId(id_seleccionado); // Actualiza la lista de usuarios en el dropdown
+            } else {
+                throw new Error('Error al crear el usuario');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    })
+
+    gastosList.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('delete-btn')) {
+            gasto_id = e.target.getAttribute('data-id');
+            try {
+                const response = await fetch(API_URL_GASTOS + "/" + gasto_id, {method: 'DELETE'});
+                if (response.status != 204) throw new Error('Error al obtener gastos');
+                gastos = await response.json();
+            } catch (error) {
+                console.error(error);
+            }
+            fetchGastosPorId(id_seleccionado);
+        }
+    })
+
     const init = () => {
         fetchUsuarios();
-        fetchGastos();
+        fetchGastosPorId(id_seleccionado);
+        addUserForm.reset();
+        addGastoForm.reset();
     };
 
     init();

@@ -158,6 +158,41 @@ func (q *Queries) ListGastos(ctx context.Context) ([]Gasto, error) {
 	return items, nil
 }
 
+const listGastosId = `-- name: ListGastosId :many
+SELECT id_gasto, id_usuario, monto, medio_de_pago, fecha, categoria FROM gastos
+WHERE id_usuario = $1
+`
+
+func (q *Queries) ListGastosId(ctx context.Context, idUsuario int32) ([]Gasto, error) {
+	rows, err := q.db.QueryContext(ctx, listGastosId, idUsuario)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Gasto
+	for rows.Next() {
+		var i Gasto
+		if err := rows.Scan(
+			&i.IDGasto,
+			&i.IDUsuario,
+			&i.Monto,
+			&i.MedioDePago,
+			&i.Fecha,
+			&i.Categoria,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUsuarios = `-- name: ListUsuarios :many
 SELECT id_usuario, nombre_usuario, email, "contraseña" FROM usuarios
 `

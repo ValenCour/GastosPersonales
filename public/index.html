@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <h1>Control de Gastos Personales</h1>
+        <header>Control de Gastos Personales</header>
 
         <div class="user-section">
             <h2>Usuarios</h2>
@@ -21,6 +21,29 @@
                 <input type="password" id="password" placeholder="Contraseña" required>
                 <button type="submit">Agregar Usuario</button>
             </form>
+        </div>
+
+        <div class="gastos-section">
+            <h2>Agregar un Gasto</h2>
+            <form id="add-gasto-form">
+                <input type="number" id="monto" placeholder="Monto" step="0.01" required>
+                <input type="text" id="medio_de_pago" placeholder="Medio de pago" required>
+                <input type="datetime-local" id="fecha" required>
+                <select id="categoria" required>
+                    <option value="Comida">Comida</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Entretenimiento">Entretenimiento</option>
+                    <option value="Servicios">Servicios</option>
+                    <option value="Otros">Otros</option>
+                </select>
+                <button type="submit">Agregar Gasto</button>
+            </form>
+        </div>
+
+        <div class="lista-gastos-section">
+            <h2>Gastos del Usuario</h2>
+            <ul id="gastos-list">
+                </ul>
         </div>
         
         <script src="app.js"></script>
