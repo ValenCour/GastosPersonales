@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderGastosId = (id) => {
         gastosList.innerHTML = ''; 
         if (id === -1) {
-            gastosList.innerHTML = '<p>Por favor, selecciona un usuario para ver sus gastos.</p>';
+            gastosList.innerHTML = '<p>Seleccione un usuario para ver sus gastos.</p>';
             return;
         }
         // Ya no es necesario filtrar aquí, porque la API ya nos da los datos filtrados.
@@ -55,12 +55,21 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        gastosList.innerHTML = `
+        <div class="gastos-header">
+            <span>Categoria</span>
+            <span>Monto</span>
+            <span>Fecha</span>
+            <span></span>
+        </div>
+        `;
+
         gastos.forEach(gasto => {
             const li = document.createElement('li');
             li.innerHTML = `
-                <span><strong>Categoría:</strong> ${gasto.categoria}</span>
-                <span><strong>Monto:</strong> $${gasto.monto}</span>
-                <span><strong>Fecha:</strong> ${new Date(gasto.fecha).toLocaleString()}</span>
+                <span>${gasto.categoria}</span>
+                <span>$${gasto.monto}</span>
+                <span>${new Date(gasto.fecha).toLocaleString()}</span>
                 <button class="delete-btn" data-id="${gasto.id_gasto}">Eliminar</button>
             `;
             gastosList.appendChild(li);
@@ -101,29 +110,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     addGastoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const nuevo_gasto = {
-            id_usuario:     parseInt(id_seleccionado),
-            monto:          document.getElementById('monto').value,
-            medio_de_pago:  document.getElementById('medio_de_pago').value,
-            fecha:          new Date(document.getElementById('fecha').value).toISOString(),
-            categoria:      document.getElementById('categoria').value
-        }
-
-        try {
-            const response = await fetch(API_URL_GASTOS, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(nuevo_gasto)
-            });
-
-            if (response.status === 201) {
-                addGastoForm.reset();
-                fetchGastosPorId(id_seleccionado); // Actualiza la lista de usuarios en el dropdown
-            } else {
-                throw new Error('Error al crear el usuario');
+        if(id_seleccionado !== -1){
+            const nuevo_gasto = {
+                id_usuario:     parseInt(id_seleccionado),
+                monto:          document.getElementById('monto').value,
+                medio_de_pago:  document.getElementById('medio_de_pago').value,
+                fecha:          new Date(document.getElementById('fecha').value).toISOString(),
+                categoria:      document.getElementById('categoria').value
             }
-        } catch (error) {
-            console.error(error);
+
+            try {
+                const response = await fetch(API_URL_GASTOS, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nuevo_gasto)
+                });
+
+                if (response.status === 201) {
+                    addGastoForm.reset();
+                    fetchGastosPorId(id_seleccionado); // Actualiza la lista de usuarios en el dropdown
+                } else {
+                    throw new Error('Error al crear el usuario');
+                }
+            } catch (error) {
+                console.error(error);
+            }
         }
     })
 

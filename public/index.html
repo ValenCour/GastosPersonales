@@ -6,46 +6,47 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <header>Control de Gastos Personales</header>
+        <div class="contenedor-grid">
+            <div class="item-grid header"><header>Gastos Personales</header></div>
 
-        <div class="user-section">
-            <h2>Usuarios</h2>
-            <div class="user-controls">
-                <label for="user-select">Selecciona un usuario:</label>
-                <select id="user-select"></select>
+            <div class="item-grid user-section">
+                <h2>Usuario</h2>
+                <div class="user-controls">
+                    <label for="user-select">Seleccione un usuario:</label>
+                    <select id="user-select"></select>
+                </div>
+                <form id="add-user-form">
+                    <h3>Agregar nuevo usuario</h3>
+                    <input type="text" id="name" placeholder="Nombre de usuario" required>
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                    <button type="submit">Agregar Usuario</button>
+                </form>
             </div>
-            <form id="add-user-form">
-                <h3>Agregar nuevo usuario</h3>
-                <input type="text" id="name" placeholder="Nombre de usuario" required>
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Contraseña" required>
-                <button type="submit">Agregar Usuario</button>
-            </form>
-        </div>
 
-        <div class="gastos-section">
-            <h2>Agregar un Gasto</h2>
-            <form id="add-gasto-form">
-                <input type="number" id="monto" placeholder="Monto" step="0.01" required>
-                <input type="text" id="medio_de_pago" placeholder="Medio de pago" required>
-                <input type="datetime-local" id="fecha" required>
-                <select id="categoria" required>
-                    <option value="Comida">Comida</option>
-                    <option value="Transporte">Transporte</option>
-                    <option value="Entretenimiento">Entretenimiento</option>
-                    <option value="Servicios">Servicios</option>
-                    <option value="Otros">Otros</option>
-                </select>
-                <button type="submit">Agregar Gasto</button>
-            </form>
-        </div>
+            <div class="item-grid gastos-section">
+                <h2>Agregar un Gasto</h2>
+                <form id="add-gasto-form">
+                    <input type="number" id="monto" placeholder="Monto" step="0.01" required>
+                    <input type="text" id="medio_de_pago" placeholder="Medio de pago" required>
+                    <input type="datetime-local" id="fecha" required>
+                    <select id="categoria" required>
+                        <option value="Comida">Comida</option>
+                        <option value="Transporte">Transporte</option>
+                        <option value="Entretenimiento">Entretenimiento</option>
+                        <option value="Servicios">Servicios</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                    <button type="submit">Agregar Gasto</button>
+                </form>
+            </div>
 
-        <div class="lista-gastos-section">
-            <h2>Gastos del Usuario</h2>
-            <ul id="gastos-list">
-                </ul>
+            <div class="item-grid gastos-list">
+                <h2>Gastos del Usuario</h2>
+                <div id="gastos-list">
+                </div>
+            </div>
         </div>
-        
         <script src="app.js"></script>
     </body>
 </html>
