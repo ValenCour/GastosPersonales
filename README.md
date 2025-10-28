@@ -1,36 +1,27 @@
+# Proyecto: Control de Gastos Personales
+
 Aplicación web en Go para llevar un registro de gastos personales.
 
-`db` contiene todo lo relacionado con la definición y acceso a datos:
+# Estructura
+- `db/`: Contiene todo lo relacionado con la base de datos. 
+- `handlers/`: Lógica de los Endpoints de la API.
+- `public/`: Archivos del Frontend.
+- `main.go`: Punto de entrada de la aplicación: configura y arranca el servidor.
+- `Makefile`: Automatización de tareas.
 
-schema.sql: Contiene la definición de la tabla `usuarios`, `gastos` y el tipo `categoria_gasto`.
+# Ejecución
 
-queries.sql: Incluye las consultas CRUD tanto para `usuarios` como para `gastos`, con anotaciones de `sqlc`.
 
-sqlc.yaml Configuración necesaria para que `sqlc` lea el esquema y consultas, y genere el código Go en la carpeta `generated/`.
 
-/generated: Contiene los archivos Go generados automáticamente.
+# Comandos Disponibles (Makefile)
 
-## Ejecución
-
-Abrir una terminal en el directorio raíz del proyecto y ejecutar en el siguiente orden:
-
-docker run --name gastos-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=gastos_db -p 5432:5432 -d docker.io/postgres
-
-docker cp db/schema.sql gastos-db:/schema.sql
-
-docker exec -it gastos-db psql -U postgres -d gastos_db -f /schema.sql
-
-docker exec -it gastos-db psql -U postgres -d gastos_db
-
-\q
-
-cd db/
-
-sqlc generate
-
-cd ..
-
-go run main.go
-
-Esto permite comprobar el correcto funcionamiento de las queries generadas.
-
+Se puede usar `make` para ejecutar diversas tareas:
+- `make run`: Construye y ejecuta la aplicación completa con su base de datos.
+- `make test`: Inicia servidor, ejecuta la secuencia de pruebas definida en `prueba.sh` y luego limpia el entorno.
+- `make script`: Ejecuta el script de prueba `prueba.sh`.
+- `make down`: Detiene y elimina los contenedores de Docker.
+- `make build`: Compila el código fuente de Go y genera el ejecutable en `./bin/app`.
+- `make generate`: Ejecuta `sqlc` para generar el código Go a partir de los archivos `.sql`.
+- `make kill`: Detiene el proceso del servidor si se está ejecutando localmente.
+- `make clean`: Elimina los directorios de compilación.
+- `make finish`: Ejecuta una limpieza completa del entorno (`down`, `clean`, `kill`).

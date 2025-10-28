@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gastosList.innerHTML = '<p>Seleccione un usuario para ver sus gastos.</p>';
             return;
         }
-        // Ya no es necesario filtrar aquí, porque la API ya nos da los datos filtrados.
+
         if (gastos.length === 0) {
             gastosList.innerHTML = '<p>Este usuario no tiene gastos registrados.</p>';
             return;
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     addUserForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Evita que el formulario recargue la página
+        e.preventDefault();
         
         const nuevo_usuario = {
             nombre_usuario: document.getElementById('name').value,
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.status === 201) {
                 addUserForm.reset();
-                fetchUsuarios(); // Actualiza la lista de usuarios en el dropdown
+                fetchUsuarios();
             } else {
                 throw new Error('Error al crear el usuario');
             }
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.status === 201) {
                     addGastoForm.reset();
-                    fetchGastosPorId(id_seleccionado); // Actualiza la lista de usuarios en el dropdown
+                    fetchGastosPorId(id_seleccionado);
                 } else {
                     throw new Error('Error al crear el usuario');
                 }

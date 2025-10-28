@@ -110,9 +110,8 @@ func GastosPorUsuarioHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Método no permitido. Solo se acepta GET.", http.StatusMethodNotAllowed)
 		return
 	}
-	// Quitamos el prefijo "/usuarios/" -> queda "12/gastos"
+
 	tempPath := strings.TrimPrefix(r.URL.Path, "/usuarios/")
-	// Quitamos el sufijo "/gastos" -> queda "12"
 	id_str := strings.TrimSuffix(tempPath, "/gastos")
 
 	id, err := strconv.Atoi(id_str)

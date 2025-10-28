@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Este script prueba el flujo completo de la API de gastos.
-
 echo "### Inicio de pruebas ###"
 
 echo "=== POSTs validos en /usuarios ==="
