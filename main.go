@@ -19,6 +19,7 @@ var queries *sqlc.Queries
 func main() {
 	var err_db error
 	db, err_db = sql.Open("postgres", "postgres://postgres:postgres@localhost:5432/gastos_db?sslmode=disable")
+
 	if err_db != nil {
 		log.Fatal("Error abriendo conexión:", err_db)
 	} else {
