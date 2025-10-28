@@ -11,7 +11,27 @@ Aplicación web en Go para llevar un registro de gastos personales.
 
 # Ejecución
 
+1. **Levantar el servidor:**
+    `make run`
+    Este comando se encarga de:
+    * Generar el código Go a partir de SQL.
+    * Compilar la aplicación Go.
+    * Iniciar la base de datos en un contenedor Docker.
+    * Ejecuta el servidor de Go localmente.
 
+2.  **Acceso a la aplicación:**
+    Una vez que se muestre por consola el mensaje "--- Servidor iniciado ---",
+    abrir el navegador en:[http://localhost:8080]
+
+3.  **Limpieza del entorno**
+    `make finish` permite limpiar completamente el entorno para detener todos los servicios y eliminar los archivos generados.
+
+# Ejecución de pruebas
+
+Para verificar que todo funciona correctamente, el comando `make test` ejecuta el ciclo completo de la aplicación de forma automatizada:
+1. `run`: Construye la aplicación y levanta todo el entorno (servidor y base de datos).
+2. `script`: Ejecuta el script de pruebas `prueba.sh`.
+3. `finish`: Una vez finalizadas las pruebas, apaga los contenedores de Docker y limpia todos los archivos generados, dejando el espacio de trabajo limpio.
 
 # Comandos Disponibles (Makefile)
 
@@ -25,3 +45,17 @@ Se puede usar `make` para ejecutar diversas tareas:
 - `make kill`: Detiene el proceso del servidor si se está ejecutando localmente.
 - `make clean`: Elimina los directorios de compilación.
 - `make finish`: Ejecuta una limpieza completa del entorno (`down`, `clean`, `kill`).
+
+# Endopoints de la API
+La aplicación expone los siguientes endpoints:
+- `GET /usuarios`: Lista todos los usuarios registrados.
+- `POST /usuarios`: Crea un nuevo usuario.
+- `GET /usuarios/{id}`: Obtiene la información de un usuario específico por su id.
+- `PUT /usuarios/{id}`: Actualiza la información de un usuario existente.
+- `DELETE /usuarios/{id}`: Elimina un usuario por su id.
+- `GET /usuarios/{id}/gastos`: Lista todos los gastos de un usuario por su id.
+- `GET /gastos`: Lista todos los gastos registrados.
+- `POST /gastos`: Registra un nuevo gasto para un usuario.
+- `GET /gastos/{id}`: Obtiene la información de un gasto específico por su id.
+- `PUT /gastos/{id}`: Actualiza la información de un gasto existente.
+- `DELETE /gastos/{id}`: Elimina un gasto por su id.

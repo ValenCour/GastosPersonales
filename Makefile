@@ -3,7 +3,7 @@ COMPOSE_PROJECT_NAME=tp3
 default: test	
 
 #Inicia servidor, ejecuta las pruebas y termina
-test: kill run script finish
+test: run script finish
 
 #Ejecuta el script de prueba ubicado en 'prueba.sh'
 script: 
