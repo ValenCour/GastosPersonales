@@ -20,8 +20,7 @@ Aplicación web en Go para llevar un registro de gastos personales.
     * Ejecuta el servidor de Go localmente.
 
 2.  **Acceso a la aplicación:**
-    Una vez que se muestre por consola el mensaje "--- Servidor iniciado ---",
-    abrir el navegador en:[http://localhost:8080]
+    Una vez que se muestre por consola el mensaje "--- Servidor iniciado ---", abrir el navegador en:[http://localhost:8080]
 
 3.  **Limpieza del entorno**
     `make finish` permite limpiar completamente el entorno para detener todos los servicios y eliminar los archivos generados.
@@ -46,7 +45,7 @@ Se puede usar `make` para ejecutar diversas tareas:
 - `make clean`: Elimina los directorios de compilación.
 - `make finish`: Ejecuta una limpieza completa del entorno (`down`, `clean`, `kill`).
 
-# Endopoints de la API
+# Endpoints de la API
 La aplicación expone los siguientes endpoints:
 - `GET /usuarios`: Lista todos los usuarios registrados.
 - `POST /usuarios`: Crea un nuevo usuario.
