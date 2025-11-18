@@ -2,6 +2,7 @@ package handlers
 
 import (
 	sqlc "Tp3/db/generated"
+	views "Tp3/views"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,40 +15,51 @@ var queries *sqlc.Queries
 func UsuariosHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		w.Header().Set("Content-Type", "application/json")
+		ctx := r.Context()
 		usuarios, err := queries.ListUsuarios(r.Context())
 		if err != nil {
 			fmt.Println("Error al obtener usuarios de la base", err)
 		}
 
-		err = json.NewEncoder(w).Encode(usuarios)
-		if err != nil {
-			fmt.Println("Error al codificar usuarios", err)
-		} else {
-			fmt.Println("Lista de usuarios:", usuarios)
+		idStr := r.URL.Query().Get("id_usuario")
+		var selectedID int64 = -1 // Valor por defecto
+		var gastos []sqlc.Gasto
+
+		if idStr != "" && idStr != "-1" {
+			if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
+				selectedID = id
+				// Buscar los gastos de ese usuario específico
+				gastos, err = queries.ListGastosId(ctx, int32(id))
+				if err != nil {
+					fmt.Println("Error trayendo gastos:", err)
+				}
+			}
 		}
+		views.Estructura(usuarios, gastos, int32(selectedID)).Render(ctx, w)
 	case http.MethodPost:
-		var nuevo_usuario sqlc.CreateUsuarioParams
-		err := json.NewDecoder(r.Body).Decode(&nuevo_usuario)
+		err := r.ParseForm()
 		if err != nil {
 			fmt.Println("Error al decodificar usuario", err)
 		}
 
-		w.Header().Set("Content-Type", "application/json")
+		nombre := r.FormValue("name")
+		email := r.FormValue("email")
+		password := r.FormValue("password")
 
-		if usuarioValido(nuevo_usuario.NombreUsuario, nuevo_usuario.Email, nuevo_usuario.Contraseña) {
+		if usuarioValido(nombre, email, password) {
 			usuario, err_create := queries.CreateUsuario(r.Context(), sqlc.CreateUsuarioParams{
-				NombreUsuario: nuevo_usuario.NombreUsuario,
-				Email:         nuevo_usuario.Email,
-				Contraseña:    nuevo_usuario.Contraseña,
+				NombreUsuario: nombre,
+				Email:         email,
+				Contraseña:    password,
 			})
 			if err_create != nil {
 				fmt.Println("Error al crear usuario", err_create)
 			} else {
-				w.WriteHeader(http.StatusCreated)
+				//w.WriteHeader(http.StatusCreated)
 				fmt.Println("Usuario creado: ", usuario)
 			}
 		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
@@ -139,6 +151,9 @@ func GastosPorUsuarioHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func usuarioValido(nombre, email, contraseña string) bool {
+	fmt.Println(nombre)
+	fmt.Println(email)
+	fmt.Println(contraseña)
 	if nombre != "" && email != "" && contraseña != "" {
 		fmt.Println("Usuario válido")
 		return true

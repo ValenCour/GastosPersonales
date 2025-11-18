@@ -30,7 +30,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.Handle("/", http.FileServer(http.Dir("./public")))
+	mux.HandleFunc("/", handlers.PaginaHandler)
+
+	mux.Handle("/views/", http.StripPrefix("/views/", http.FileServer(http.Dir("views"))))
 
 	mux.HandleFunc("/usuarios", handlers.UsuariosHandler)
 

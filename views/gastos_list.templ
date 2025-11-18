@@ -1,0 +1,39 @@
+package views
+
+import (
+    sqlc "Tp3/db/generated"
+	"fmt"
+)
+
+templ GastosList(gastos []sqlc.Gasto, selectedID int32) {
+    <div class="item-grid gastos-list">
+        <h2>Gastos del Usuario</h2>
+
+        if selectedID == -1 {
+             <p>Seleccione un usuario para ver sus gastos.</p>
+        } else if len(gastos) == 0 {
+             <p>Este usuario no tiene gastos registrados.</p>
+        } else {
+            <div class="gastos-header">
+                <span>Categoría</span>
+                <span>Monto</span>
+                <span>Fecha</span>
+                <span>Acción</span>
+            </div>
+            
+            <ul id="gastos-list">
+                for _, gasto := range gastos {
+                    <li>
+                        <span>{ gasto.Categoria }</span>
+                        <span>{ fmt.Sprintf("$%.2f", gasto.Monto) }</span>
+                        <span>{ gasto.Fecha.Format("02/01/2006 15:04") }</span>
+                        
+                        <form action={ templ.SafeURL(fmt.Sprintf("/gastos/%d/delete", gasto.IDGasto)) } method="POST" style="display:inline;">
+                             <button class="delete-btn" type="submit">Eliminar</button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+}

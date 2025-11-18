@@ -1,0 +1,31 @@
+package views
+
+import (
+    sqlc "Tp3/db/generated"
+	"fmt"
+)
+
+templ UserSelect(users []sqlc.Usuario, selectedID int32) {
+	<h2>Usuario</h2>
+    <div class="user-controls">
+        <form action="/" method="GET">
+            <label for="user-select">Seleccione un usuario:</label>
+            
+            <select id="user-select" name="id_usuario" onchange="this.form.submit()">
+                <option value="-1" if selectedID == -1 { selected }>Seleccione un usuario</option>
+                
+                for _, user := range users {
+                    <option 
+                        value={ fmt.Sprint(user.IDUsuario) }
+                        if user.IDUsuario == selectedID {
+                            selected
+                        }
+                    >
+                        { user.NombreUsuario }
+                    </option>
+                }
+            </select>
+            
+            </form>
+    </div>
+}

@@ -3,7 +3,7 @@ COMPOSE_PROJECT_NAME=tp3
 default: test	
 
 #Inicia servidor, ejecuta las pruebas y termina
-test: run script finish
+test: templ generate run
 
 #Ejecuta el script de prueba ubicado en 'prueba.sh'
 script: 
@@ -39,7 +39,7 @@ kill-hard:
 	@bash -c "sudo lsof -ti :8080 | xargs -r sudo kill -9"
 
 #Compila el código Go
-build: generate
+build: generate templ
 	@go build -o ./bin/app .
 
 #Elimina los directorios de binarios y temporales
@@ -48,5 +48,8 @@ clean:
 
 #Regla de finalización que: elimina los contenedores, borra los binarios y mata cualquier proceso del servidor
 finish: down clean kill
+
+templ: 
+	@templ generate
 
 .PHONY: default up down generate test run waitdocker kill kill-hard build clean finish

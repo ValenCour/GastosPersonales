@@ -1,27 +1,24 @@
+package views
+
+import (
+    sqlc "Tp3/db/generated"
+)
+
+templ Estructura(usuarios []sqlc.Usuario, gastos []sqlc.Gasto, selectedID int32) {
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <title>Control de Gastos</title>
-        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="views/styles.css">
     </head>
     <body>
         <div class="contenedor-grid">
             <div class="item-grid header"><header>Gastos Personales</header></div>
 
             <div class="item-grid user-section">
-                <h2>Usuario</h2>
-                <div class="user-controls">
-                    <label for="user-select">Seleccione un usuario:</label>
-                    <select id="user-select"></select>
-                </div>
-                <form id="add-user-form">
-                    <h3>Agregar nuevo usuario</h3>
-                    <input type="text" id="name" placeholder="Nombre de usuario" required>
-                    <input type="email" id="email" placeholder="Email" required>
-                    <input type="password" id="password" placeholder="Contraseña" required>
-                    <button type="submit">Agregar Usuario</button>
-                </form>
+                @UserSelect(usuarios,selectedID)
+                @usuarioForm()
             </div>
 
             <div class="item-grid gastos-section">
@@ -47,6 +44,6 @@
                 </div>
             </div>
         </div>
-        <script src="app.js"></script>
     </body>
 </html>
+}

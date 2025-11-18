@@ -1,0 +1,11 @@
+package views
+
+templ usuarioForm(){
+	<form id="add-user-form" action="/usuarios" method="POST">
+		<h3>Agregar nuevo usuario</h3>
+		<input type="text" id="name" name="name" placeholder="Nombre de usuario" required>
+		<input type="email" id="email" name="email" placeholder="Email" required>
+		<input type="password" id="password" name="password" placeholder="Contraseña" required>
+		<button type="submit">Agregar Usuario</button>
+    </form>
+}
