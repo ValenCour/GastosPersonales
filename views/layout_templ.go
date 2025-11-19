@@ -45,7 +45,23 @@ func Estructura(usuarios []sqlc.Usuario, gastos []sqlc.Gasto, selectedID int32) 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div class=\"item-grid gastos-section\"><h2>Agregar un Gasto</h2><form id=\"add-gasto-form\"><input type=\"number\" id=\"monto\" placeholder=\"Monto\" step=\"0.01\" required> <input type=\"text\" id=\"medio_de_pago\" placeholder=\"Medio de pago\" required> <input type=\"datetime-local\" id=\"fecha\" required> <select id=\"categoria\" required><option value=\"Comida\">Comida</option> <option value=\"Transporte\">Transporte</option> <option value=\"Entretenimiento\">Entretenimiento</option> <option value=\"Servicios\">Servicios</option> <option value=\"Otros\">Otros</option></select> <button type=\"submit\">Agregar Gasto</button></form></div><div class=\"item-grid gastos-list\"><h2>Gastos del Usuario</h2><div id=\"gastos-list\"></div></div></div></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div class=\"item-grid gastos-section\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = gastoForm(selectedID).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><div class=\"item-grid gastos-list\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = GastosList(gastos, selectedID).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

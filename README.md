@@ -5,7 +5,7 @@ Aplicación web en Go para llevar un registro de gastos personales.
 # Estructura
 - `db/`: Contiene todo lo relacionado con la base de datos. 
 - `handlers/`: Lógica de los Endpoints de la API.
-- `public/`: Archivos del Frontend.
+- `views/`: Archivos .templ que definen la estructura HTML de las páginas.
 - `main.go`: Punto de entrada de la aplicación: configura y arranca el servidor.
 - `Makefile`: Automatización de tareas.
 
@@ -15,6 +15,7 @@ Aplicación web en Go para llevar un registro de gastos personales.
     `make run`
     Este comando se encarga de:
     * Generar el código Go a partir de SQL.
+    * Generar código Go mediante templ generate
     * Compilar la aplicación Go.
     * Iniciar la base de datos en un contenedor Docker.
     * Ejecuta el servidor de Go localmente.
@@ -25,22 +26,14 @@ Aplicación web en Go para llevar un registro de gastos personales.
 3.  **Limpieza del entorno**
     `make finish` permite limpiar completamente el entorno para detener todos los servicios y eliminar los archivos generados.
 
-# Ejecución de pruebas
-
-Para verificar que todo funciona correctamente, el comando `make test` ejecuta el ciclo completo de la aplicación de forma automatizada:
-1. `run`: Construye la aplicación y levanta todo el entorno (servidor y base de datos).
-2. `script`: Ejecuta el script de pruebas `prueba.sh`.
-3. `finish`: Una vez finalizadas las pruebas, apaga los contenedores de Docker y limpia todos los archivos generados, dejando el espacio de trabajo limpio.
-
 # Comandos Disponibles (Makefile)
 
 Se puede usar `make` para ejecutar diversas tareas:
 - `make run`: Construye y ejecuta la aplicación completa con su base de datos.
-- `make test`: Inicia servidor, ejecuta la secuencia de pruebas definida en `prueba.sh` y luego limpia el entorno.
-- `make script`: Ejecuta el script de prueba `prueba.sh`.
 - `make down`: Detiene y elimina los contenedores de Docker.
 - `make build`: Compila el código fuente de Go y genera el ejecutable en `./bin/app`.
 - `make generate`: Ejecuta `sqlc` para generar el código Go a partir de los archivos `.sql`.
+- `make templ`: Ejecuta `templ generate` para generar código Go a partir de los archivos `.templ`.
 - `make kill`: Detiene el proceso del servidor si se está ejecutando localmente.
 - `make clean`: Elimina los directorios de compilación.
 - `make finish`: Ejecuta una limpieza completa del entorno (`down`, `clean`, `kill`).
@@ -58,3 +51,4 @@ La aplicación expone los siguientes endpoints:
 - `GET /gastos/{id}`: Obtiene la información de un gasto específico por su id.
 - `PUT /gastos/{id}`: Actualiza la información de un gasto existente.
 - `DELETE /gastos/{id}`: Elimina un gasto por su id.
+- `POST /gastos/delete/{id}`: Elimina un gasto por su id.

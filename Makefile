@@ -1,13 +1,6 @@
 COMPOSE_PROJECT_NAME=tp3
 
-default: test	
-
-#Inicia servidor, ejecuta las pruebas y termina
-test: templ generate run
-
-#Ejecuta el script de prueba ubicado en 'prueba.sh'
-script: 
-	@bash -c "./prueba.sh"
+default: run	
 
 #Levanta la base de datos y espera hasta que esté lista antes de continuar
 up: 

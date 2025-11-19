@@ -1,0 +1,23 @@
+package views
+
+import(
+    "fmt"
+)
+
+templ gastoForm(id int32){
+    <h2>Agregar un Gasto</h2>
+    <form id="add-gasto-form" action="/gastos" method="POST">
+        <input type="number" id="monto" name="monto" placeholder="Monto" step="0.01" required>
+        <input type="text" id="medio_de_pago" name="medio_de_pago" placeholder="Medio de pago" required>
+        <input type="datetime-local" id="fecha" name="fecha" required>
+        <select id="categoria" name="categoria" required>
+            <option value="Comida">Comida</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Entretenimiento">Entretenimiento</option>
+            <option value="Servicios">Servicios</option>
+            <option value="Otros">Otros</option>
+        </select>
+        <input type="hidden" name="id_usuario" value={ fmt.Sprint(id) } />
+        <button type="submit">Agregar Gasto</button>
+    </form>
+}

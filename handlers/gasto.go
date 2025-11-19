@@ -27,28 +27,44 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Lista de gastos:", gastos)
 		}
 	case http.MethodPost:
-		var nuevo_gasto sqlc.CreateGastoParams
-		err := json.NewDecoder(r.Body).Decode(&nuevo_gasto)
+		err := r.ParseForm()
 		if err != nil {
-			fmt.Println("Error al decodificar gasto", err)
+			fmt.Println("Error al decodificar usuario", err)
 		}
 
-		if gastoValido(nuevo_gasto.Monto, nuevo_gasto.MedioDePago, nuevo_gasto.Fecha, nuevo_gasto.Categoria) {
-			w.Header().Set("Content-Type", "application/json")
+		monto := r.FormValue("monto")
+		medio_de_pago := r.FormValue("medio_de_pago")
+		fechaStr := r.FormValue("fecha")
+		categoria := r.FormValue("categoria")
+		idStr := r.FormValue("id_usuario")
 
-			gasto, err_create := queries.CreateGasto(r.Context(), sqlc.CreateGastoParams{
-				IDUsuario:   nuevo_gasto.IDUsuario,
-				Monto:       nuevo_gasto.Monto,
-				MedioDePago: nuevo_gasto.MedioDePago,
-				Fecha:       nuevo_gasto.Fecha,
-				Categoria:   nuevo_gasto.Categoria,
-			})
-			if err_create != nil {
-				fmt.Println("Error al crear gasto", err_create)
+		fecha, err := time.Parse("2006-01-02T15:04", fechaStr)
+		if err != nil {
+			fmt.Println("Error parseando fecha:", err)
+			return
+		}
+		if idStr != "" && idStr != "-1" {
+			if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
+				if gastoValido(monto, medio_de_pago, fecha, sqlc.CategoriaGasto(categoria)) {
+					gasto, err_create := queries.CreateGasto(r.Context(), sqlc.CreateGastoParams{
+						IDUsuario:   int32(id),
+						Monto:       monto,
+						MedioDePago: medio_de_pago,
+						Fecha:       fecha,
+						Categoria:   sqlc.CategoriaGasto(categoria),
+					})
+					if err_create != nil {
+						fmt.Println("Error al crear gasto", err_create)
+					} else {
+						fmt.Println("Gasto creado: ", gasto)
+					}
+				}
 			} else {
-				w.WriteHeader(http.StatusCreated)
-				fmt.Println("Gasto creado: ", gasto)
+				fmt.Println("Error al parsear id", err)
 			}
+			http.Redirect(w, r, "/?id_usuario="+idStr, http.StatusSeeOther)
+		} else {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 	}
 }
@@ -107,6 +123,30 @@ func GastosIdHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+}
+
+func GastosDeleteHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+		return
+	}
+	idUsuario := r.FormValue("id_usuario")
+	id := strings.TrimPrefix(r.URL.Path, "/gastos/delete/")
+	id_int, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("Error al convertir id", err)
+		http.Error(w, "ID inválido", http.StatusBadRequest)
+		return
+	}
+	err = queries.DeleteGasto(r.Context(), int32(id_int))
+	if err != nil {
+		fmt.Println("Error al eliminar gasto:", err)
+		http.Error(w, "No se pudo eliminar el gasto", http.StatusInternalServerError)
+		return
+	} else {
+		fmt.Printf("Gasto con id = %d eliminado \n", id_int)
+	}
+	http.Redirect(w, r, "/?id_usuario="+idUsuario, http.StatusSeeOther)
 }
 
 func gastoValido(monto string, medio_pago string, fecha time.Time, categoria sqlc.CategoriaGasto) bool {

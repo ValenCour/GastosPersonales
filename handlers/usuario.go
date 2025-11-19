@@ -22,13 +22,12 @@ func UsuariosHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		idStr := r.URL.Query().Get("id_usuario")
-		var selectedID int64 = -1 // Valor por defecto
+		var selectedID int64 = -1
 		var gastos []sqlc.Gasto
 
 		if idStr != "" && idStr != "-1" {
 			if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
 				selectedID = id
-				// Buscar los gastos de ese usuario específico
 				gastos, err = queries.ListGastosId(ctx, int32(id))
 				if err != nil {
 					fmt.Println("Error trayendo gastos:", err)
@@ -55,7 +54,6 @@ func UsuariosHandler(w http.ResponseWriter, r *http.Request) {
 			if err_create != nil {
 				fmt.Println("Error al crear usuario", err_create)
 			} else {
-				//w.WriteHeader(http.StatusCreated)
 				fmt.Println("Usuario creado: ", usuario)
 			}
 		}

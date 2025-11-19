@@ -48,6 +48,8 @@ func main() {
 
 	mux.HandleFunc("/gastos/", handlers.GastosIdHandler)
 
+	mux.HandleFunc("/gastos/delete/", handlers.GastosDeleteHandler)
+
 	log_mux := loggingMiddleware(mux)
 
 	err := http.ListenAndServe(":8080", log_mux)

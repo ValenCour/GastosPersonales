@@ -13,7 +13,7 @@ import (
 	"fmt"
 )
 
-func GastosList(gastos []sqlc.Gasto, selectedID int32) templ.Component {
+func GastosList(gastos []sqlc.Gasto, id int32) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -34,11 +34,11 @@ func GastosList(gastos []sqlc.Gasto, selectedID int32) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"item-grid gastos-list\"><h2>Gastos del Usuario</h2>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<h2>Gastos del Usuario</h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if selectedID == -1 {
+		if id == -1 {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<p>Seleccione un usuario para ver sus gastos.</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -61,7 +61,7 @@ func GastosList(gastos []sqlc.Gasto, selectedID int32) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(gasto.Categoria)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 27, Col: 47}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 26, Col: 43}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
@@ -72,9 +72,9 @@ func GastosList(gastos []sqlc.Gasto, selectedID int32) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var3 string
-				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("$%.2f", gasto.Monto))
+				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(gasto.Monto)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 28, Col: 65}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 27, Col: 39}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -87,7 +87,7 @@ func GastosList(gastos []sqlc.Gasto, selectedID int32) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(gasto.Fecha.Format("02/01/2006 15:04"))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 29, Col: 70}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 28, Col: 66}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -98,27 +98,36 @@ func GastosList(gastos []sqlc.Gasto, selectedID int32) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var5 templ.SafeURL
-				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/gastos/%d/delete", gasto.IDGasto)))
+				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(fmt.Sprintf("/gastos/delete/%d", gasto.IDGasto)))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 31, Col: 101}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 29, Col: 97}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" method=\"POST\" style=\"display:inline;\"><button class=\"delete-btn\" type=\"submit\">Eliminar</button></form></li>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" method=\"POST\"><button class=\"delete-btn\" type=\"submit\">Eliminar</button> <input type=\"hidden\" name=\"id_usuario\" value=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var6 string
+				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(id))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/gastos_list.templ`, Line: 31, Col: 85}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\"></form></li>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</ul>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</ul><script>\n            function deleteGasto(id) {\n                fetch(`/gastos/${id}`, {\n                    method: \"DELETE\"\n                })\n            }\n        </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
 		}
 		return nil
 	})

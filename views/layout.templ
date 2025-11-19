@@ -22,26 +22,11 @@ templ Estructura(usuarios []sqlc.Usuario, gastos []sqlc.Gasto, selectedID int32)
             </div>
 
             <div class="item-grid gastos-section">
-                <h2>Agregar un Gasto</h2>
-                <form id="add-gasto-form">
-                    <input type="number" id="monto" placeholder="Monto" step="0.01" required>
-                    <input type="text" id="medio_de_pago" placeholder="Medio de pago" required>
-                    <input type="datetime-local" id="fecha" required>
-                    <select id="categoria" required>
-                        <option value="Comida">Comida</option>
-                        <option value="Transporte">Transporte</option>
-                        <option value="Entretenimiento">Entretenimiento</option>
-                        <option value="Servicios">Servicios</option>
-                        <option value="Otros">Otros</option>
-                    </select>
-                    <button type="submit">Agregar Gasto</button>
-                </form>
+                @gastoForm(selectedID)
             </div>
 
             <div class="item-grid gastos-list">
-                <h2>Gastos del Usuario</h2>
-                <div id="gastos-list">
-                </div>
+                @GastosList(gastos,selectedID)
             </div>
         </div>
     </body>
