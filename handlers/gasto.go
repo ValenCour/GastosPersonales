@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"views"
 )
 
 func GastosHandler(w http.ResponseWriter, r *http.Request) {
@@ -29,7 +30,8 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		err := r.ParseForm()
 		if err != nil {
-			fmt.Println("Error al decodificar usuario", err)
+			http.Error(w, "Error procesando formulario", 400)
+			return
 		}
 
 		monto := r.FormValue("monto")
@@ -38,34 +40,48 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 		categoria := r.FormValue("categoria")
 		idStr := r.FormValue("id_usuario")
 
+		// Parseo
+		idUsuario, _ := strconv.Atoi(idStr)
+
 		fecha, err := time.Parse("2006-01-02T15:04", fechaStr)
 		if err != nil {
-			fmt.Println("Error parseando fecha:", err)
+			http.Error(w, "Fecha inválida", 400)
 			return
 		}
-		if idStr != "" && idStr != "-1" {
-			if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
-				if gastoValido(monto, medio_de_pago, fecha, sqlc.CategoriaGasto(categoria)) {
-					gasto, err_create := queries.CreateGasto(r.Context(), sqlc.CreateGastoParams{
-						IDUsuario:   int32(id),
-						Monto:       monto,
-						MedioDePago: medio_de_pago,
-						Fecha:       fecha,
-						Categoria:   sqlc.CategoriaGasto(categoria),
-					})
-					if err_create != nil {
-						fmt.Println("Error al crear gasto", err_create)
-					} else {
-						fmt.Println("Gasto creado: ", gasto)
-					}
-				}
-			} else {
-				fmt.Println("Error al parsear id", err)
-			}
-			http.Redirect(w, r, "/?id_usuario="+idStr, http.StatusSeeOther)
-		} else {
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+
+		//Validacion
+		if !gastoValido(monto, medio_de_pago, fecha, sqlc.CategoriaGasto(categoria)) {
+			http.Error(w, "Datos inválidos", 400)
+			return
 		}
+
+		// Insertar gasto
+		// IMPORTANTE: monto es string, tu SQLC espera float64
+		//montoFloat, _ := strconv.ParseFloat(monto, 64)
+
+		_, err = queries.CreateGasto(r.Context(), sqlc.CreateGastoParams{
+			IDUsuario:   int32(idUsuario),
+			Monto:       montoFloat,
+			MedioDePago: medio_de_pago,
+			Fecha:       fecha,
+			Categoria:   sqlc.CategoriaGasto(categoria),
+		})
+
+		if err != nil {
+			http.Error(w, "Error al insertar gasto", 500)
+			return
+		}
+
+		// Obtener lista actualizada del usuario
+		gastos, err := queries.ListGastosDeUsuario(r.Context(), int32(idUsuario))
+		if err != nil {
+			http.Error(w, "Error obteniendo lista", 500)
+			return
+		}
+
+		// HTMX — devolvemos SOLO el fragmento HTML (NO redirección)
+		w.Header().Set("Content-Type", "text/html")
+		views.GastosList(gastos, int32(idUsuario)).Render(r.Context(), w)
 	}
 }
 
