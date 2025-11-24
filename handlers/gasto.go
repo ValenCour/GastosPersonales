@@ -2,13 +2,13 @@ package handlers
 
 import (
 	sqlc "Tp3/db/generated"
+	"Tp3/views"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
-	"views"
 )
 
 func GastosHandler(w http.ResponseWriter, r *http.Request) {
@@ -55,13 +55,9 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Insertar gasto
-		// IMPORTANTE: monto es string, tu SQLC espera float64
-		//montoFloat, _ := strconv.ParseFloat(monto, 64)
-
 		_, err = queries.CreateGasto(r.Context(), sqlc.CreateGastoParams{
 			IDUsuario:   int32(idUsuario),
-			Monto:       montoFloat,
+			Monto:       monto,
 			MedioDePago: medio_de_pago,
 			Fecha:       fecha,
 			Categoria:   sqlc.CategoriaGasto(categoria),
@@ -73,7 +69,7 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Obtener lista actualizada del usuario
-		gastos, err := queries.ListGastosDeUsuario(r.Context(), int32(idUsuario))
+		gastos, err := queries.ListGastosId(r.Context(), int32(idUsuario))
 		if err != nil {
 			http.Error(w, "Error obteniendo lista", 500)
 			return
@@ -133,36 +129,13 @@ func GastosIdHandler(w http.ResponseWriter, r *http.Request) {
 			err := queries.DeleteGasto(r.Context(), int32(id_int))
 			if err != nil {
 				fmt.Println("Error al eliminar gasto:", err)
-			} else {
-				w.WriteHeader(http.StatusNoContent)
-				fmt.Printf("Gasto con id = %d eliminado \n", id_int)
+				http.Error(w, "Error al eliminar el gasto", http.StatusInternalServerError)
+				return
 			}
+			w.WriteHeader(http.StatusOK)
+			fmt.Printf("Gasto con id = %d eliminado \n", id_int)
 		}
 	}
-}
-
-func GastosDeleteHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
-		return
-	}
-	idUsuario := r.FormValue("id_usuario")
-	id := strings.TrimPrefix(r.URL.Path, "/gastos/delete/")
-	id_int, err := strconv.Atoi(id)
-	if err != nil {
-		fmt.Println("Error al convertir id", err)
-		http.Error(w, "ID inválido", http.StatusBadRequest)
-		return
-	}
-	err = queries.DeleteGasto(r.Context(), int32(id_int))
-	if err != nil {
-		fmt.Println("Error al eliminar gasto:", err)
-		http.Error(w, "No se pudo eliminar el gasto", http.StatusInternalServerError)
-		return
-	} else {
-		fmt.Printf("Gasto con id = %d eliminado \n", id_int)
-	}
-	http.Redirect(w, r, "/?id_usuario="+idUsuario, http.StatusSeeOther)
 }
 
 func gastoValido(monto string, medio_pago string, fecha time.Time, categoria sqlc.CategoriaGasto) bool {

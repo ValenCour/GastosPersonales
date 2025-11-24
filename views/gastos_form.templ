@@ -6,7 +6,11 @@ import(
 
 templ gastoForm(id int32){
     <h2>Agregar un Gasto</h2>
-    <form id="add-gasto-form" action="/gastos" method="POST">
+    <form id="add-gasto-form"
+     hx-post="/gastos" 
+     hx-target="#gastos-list-container" 
+     hx-swap="outerHTML"
+     >
         <input type="number" id="monto" name="monto" placeholder="Monto" step="0.01" required>
         <input type="text" id="medio_de_pago" name="medio_de_pago" placeholder="Medio de pago" required>
         <input type="datetime-local" id="fecha" name="fecha" required>
