@@ -4,7 +4,7 @@ import (
     sqlc "Tp3/db/generated"
 )
 
-templ Estructura(usuarios []sqlc.Usuario, gastos []sqlc.Gasto, selectedID int32) {
+templ Estructura(usuario sqlc.Usuario, gastos []sqlc.Gasto, id_usuario int32) {
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,16 +18,15 @@ templ Estructura(usuarios []sqlc.Usuario, gastos []sqlc.Gasto, selectedID int32)
             <div class="item-grid header"><header>Gastos Personales</header></div>
 
             <div class="item-grid user-section">
-                @UserSelect(usuarios,selectedID)
-                @usuarioForm()
+                @UserSelect(usuario)
             </div>
 
             <div class="item-grid gastos-section">
-                @gastoForm(selectedID)
+                @gastoForm(id_usuario)
             </div>
 
             <div class="item-grid gastos-list">
-                @GastosList(gastos,selectedID)
+                @GastosList(gastos,id_usuario)
             </div>
         </div>
     </body>

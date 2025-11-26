@@ -1,9 +1,5 @@
 package views
 
-import(
-    "fmt"
-)
-
 templ gastoForm(id int32){
     <h2>Agregar un Gasto</h2>
     <form id="add-gasto-form"
@@ -21,7 +17,6 @@ templ gastoForm(id int32){
             <option value="Servicios">Servicios</option>
             <option value="Otros">Otros</option>
         </select>
-        <input type="hidden" name="id_usuario" value={ fmt.Sprint(id) } />
         <button type="submit">Agregar Gasto</button>
     </form>
 }

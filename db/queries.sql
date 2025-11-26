@@ -7,6 +7,10 @@ RETURNING *;
 SELECT * FROM usuarios
 WHERE id_usuario = $1;
 
+-- name: GetUsuarioByEmail :one
+SELECT * FROM usuarios 
+WHERE email = $1;
+
 -- name: ListUsuarios :many
 SELECT * FROM usuarios;
 

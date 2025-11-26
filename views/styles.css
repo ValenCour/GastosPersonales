@@ -27,7 +27,8 @@ body {
   grid-template-rows: auto auto auto;
   grid-template-areas: 
   "header header"
-  "user gastos"
+  "user user"
+  "gastos gastos"
   "list list";
 }
 
@@ -59,10 +60,47 @@ body {
   grid-area: list;
 }
 
+.user-info {
+  display: grid;
+  grid-template-columns: 1fr auto; 
+  grid-template-areas: "name logout";
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+}
+
+.user-name {
+  grid-area: name;
+}
+
+.gastos-section h2 {
+  margin-bottom: 5px;
+}
+
+
+.logout-form {
+  grid-area: logout;
+  justify-self: end;
+}
+
 form {
   display: flex;
   flex-direction: column;
   gap: 1em;
+}
+
+#add-gasto-form {
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+#add-gasto-form input, 
+#add-gasto-form select {
+  width: auto;
+  flex-grow: 1;
+  margin: 0;
 }
 
 input[type="text"],
@@ -124,6 +162,7 @@ button[type="submit"]:hover {
   border-bottom: none;
 }
 
+.btn-logout,
 .delete-btn{
   padding: 6px 8px !important;
   background-color: #ff3c3c !important;
@@ -134,6 +173,56 @@ button[type="submit"]:hover {
   font-size: 1em !important;
 }
 
+
 .delete-btn:hover {
   background-color: #cc0000 !important;
+}
+
+.btn-logout {
+  background-color: #555 !important;
+}
+
+.btn-logout:hover {
+  background-color: #333 !important;
+}
+
+/* --- Estilos para la página de Autenticación --- */
+
+.contenedor-autenticacion {
+    background-color: white;
+    padding: 2em;
+    max-width: 1300px;
+    margin: 5% auto;
+    gap: 2em;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: 
+        "header header"
+        "login register";
+}
+
+.login-section { grid-area: login; }
+.register-section { grid-area: register; }
+
+.error-box {
+    grid-column: span 2;
+    background-color: #ffe6e6;
+}
+
+.error-text {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin: 0;
+}
+
+.login-section h2, .register-section h2 {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
 }

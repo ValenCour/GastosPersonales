@@ -33,15 +33,11 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error procesando formulario", 400)
 			return
 		}
-
+		id_usuario := r.Context().Value("userID").(int32)
 		monto := r.FormValue("monto")
 		medio_de_pago := r.FormValue("medio_de_pago")
 		fechaStr := r.FormValue("fecha")
 		categoria := r.FormValue("categoria")
-		idStr := r.FormValue("id_usuario")
-
-		// Parseo
-		idUsuario, _ := strconv.Atoi(idStr)
 
 		fecha, err := time.Parse("2006-01-02T15:04", fechaStr)
 		if err != nil {
@@ -49,14 +45,13 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		//Validacion
 		if !gastoValido(monto, medio_de_pago, fecha, sqlc.CategoriaGasto(categoria)) {
 			http.Error(w, "Datos inválidos", 400)
 			return
 		}
 
 		_, err = queries.CreateGasto(r.Context(), sqlc.CreateGastoParams{
-			IDUsuario:   int32(idUsuario),
+			IDUsuario:   id_usuario,
 			Monto:       monto,
 			MedioDePago: medio_de_pago,
 			Fecha:       fecha,
@@ -68,16 +63,14 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Obtener lista actualizada del usuario
-		gastos, err := queries.ListGastosId(r.Context(), int32(idUsuario))
+		gastos, err := queries.ListGastosId(r.Context(), id_usuario)
 		if err != nil {
 			http.Error(w, "Error obteniendo lista", 500)
 			return
 		}
 
-		// HTMX — devolvemos SOLO el fragmento HTML (NO redirección)
 		w.Header().Set("Content-Type", "text/html")
-		views.GastosList(gastos, int32(idUsuario)).Render(r.Context(), w)
+		views.GastosList(gastos, int32(id_usuario)).Render(r.Context(), w)
 	}
 }
 

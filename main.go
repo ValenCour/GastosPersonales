@@ -30,7 +30,25 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", handlers.PaginaHandler)
+	mux.HandleFunc("/", handlers.AuthMiddleware(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+		handlers.PaginaHandler(w, r)
+	}))
+
+	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodPost {
+			handlers.LoginHandler(w, r)
+		} else {
+			handlers.AutenticacionHandler(w, r)
+		}
+	})
+
+	mux.HandleFunc("/register", handlers.RegistroHandler)
+
+	mux.HandleFunc("/logout", handlers.LogoutHandler)
 
 	mux.Handle("/views/", http.StripPrefix("/views/", http.FileServer(http.Dir("views"))))
 
@@ -44,7 +62,7 @@ func main() {
 		}
 	})
 
-	mux.HandleFunc("/gastos", handlers.GastosHandler)
+	mux.HandleFunc("/gastos", handlers.AuthMiddleware(handlers.GastosHandler))
 
 	mux.HandleFunc("/gastos/", handlers.GastosIdHandler)
 

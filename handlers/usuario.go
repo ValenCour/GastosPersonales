@@ -2,7 +2,6 @@ package handlers
 
 import (
 	sqlc "Tp3/db/generated"
-	views "Tp3/views"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,27 +13,27 @@ var queries *sqlc.Queries
 
 func UsuariosHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodGet:
-		ctx := r.Context()
-		usuarios, err := queries.ListUsuarios(r.Context())
-		if err != nil {
-			fmt.Println("Error al obtener usuarios de la base", err)
-		}
+	/*case http.MethodGet:
+	ctx := r.Context()
+	usuarios, err := queries.ListUsuarios(r.Context())
+	if err != nil {
+		fmt.Println("Error al obtener usuarios de la base", err)
+	}
 
-		idStr := r.URL.Query().Get("id_usuario")
-		var selectedID int64 = -1
-		var gastos []sqlc.Gasto
+	idStr := r.URL.Query().Get("id_usuario")
+	var selectedID int64 = -1
+	var gastos []sqlc.Gasto
 
-		if idStr != "" && idStr != "-1" {
-			if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
-				selectedID = id
-				gastos, err = queries.ListGastosId(ctx, int32(id))
-				if err != nil {
-					fmt.Println("Error trayendo gastos:", err)
-				}
+	if idStr != "" && idStr != "-1" {
+		if id, err := strconv.ParseInt(idStr, 10, 64); err == nil {
+			selectedID = id
+			gastos, err = queries.ListGastosId(ctx, int32(id))
+			if err != nil {
+				fmt.Println("Error trayendo gastos:", err)
 			}
 		}
-		views.Estructura(usuarios, gastos, int32(selectedID)).Render(ctx, w)
+	}
+	views.Estructura(usuarios, gastos, int32(selectedID)).Render(ctx, w)*/
 	case http.MethodPost:
 		err := r.ParseForm()
 		if err != nil {

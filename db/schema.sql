@@ -4,7 +4,7 @@ CREATE TABLE usuarios (
     id_usuario SERIAL PRIMARY KEY,
     nombre_usuario VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    contraseña VARCHAR(50) NOT NULL
+    contraseña VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE gastos (
