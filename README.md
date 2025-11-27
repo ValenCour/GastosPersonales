@@ -38,9 +38,8 @@ Se puede usar `make` para ejecutar diversas tareas:
 - `make clean`: Elimina los directorios de compilación.
 - `make finish`: Ejecuta una limpieza completa del entorno (`down`, `clean`, `kill`).
 
-# Endpoints de la API
-La aplicación expone los siguientes endpoints:
-- `GET /usuarios`: Lista todos los usuarios registrados.
+# Endpoints
+Se exponen los siguientes endpoints:
 - `POST /usuarios`: Crea un nuevo usuario.
 - `GET /usuarios/{id}`: Obtiene la información de un usuario específico por su id.
 - `PUT /usuarios/{id}`: Actualiza la información de un usuario existente.
@@ -52,3 +51,8 @@ La aplicación expone los siguientes endpoints:
 - `PUT /gastos/{id}`: Actualiza la información de un gasto existente.
 - `DELETE /gastos/{id}`: Elimina un gasto por su id.
 - `POST /gastos/delete/{id}`: Elimina un gasto por su id.
+- `GET /`: Punto de entrada principal. Muestra la gestión de gastos si el usuario está autenticado.
+- `GET /login`: Muestra la pantalla unificada de inicio de sesión y registro.
+- `POST /login`: Valida credenciales e inicia una sesión de usuario.
+- `POST /register`: Registra un nuevo usuario e inicia su sesión automáticamente.
+- `POST /logout`: Finaliza la sesión actual y redirige al inicio de sesión.

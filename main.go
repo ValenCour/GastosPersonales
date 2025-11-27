@@ -64,7 +64,7 @@ func main() {
 
 	mux.HandleFunc("/gastos", handlers.AuthMiddleware(handlers.GastosHandler))
 
-	mux.HandleFunc("/gastos/", handlers.GastosIdHandler)
+	mux.HandleFunc("/gastos/", handlers.AuthMiddleware(handlers.GastosIdHandler))
 
 	log_mux := loggingMiddleware(mux)
 

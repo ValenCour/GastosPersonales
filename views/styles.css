@@ -226,3 +226,13 @@ button[type="submit"]:hover {
     border-bottom: 2px solid #eee;
     padding-bottom: 10px;
 }
+
+.sortable-header {
+    cursor: pointer;
+}
+
+.sortable-header:hover {
+    color: #36aa00;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}

@@ -6,26 +6,56 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 )
 
 func GastosHandler(w http.ResponseWriter, r *http.Request) {
+	id_usuario := r.Context().Value("userID").(int32)
 	switch r.Method {
 	case http.MethodGet:
-		w.Header().Set("Content-Type", "application/json")
-
-		gastos, err := queries.ListGastos(r.Context())
+		gastos, err := queries.ListGastosId(r.Context(), id_usuario)
 		if err != nil {
-			fmt.Println("Error al obtener gastos de la base", err)
+			http.Error(w, "Error al obtener gastos", 500)
+			return
 		}
 
-		err = json.NewEncoder(w).Encode(gastos)
-		if err != nil {
-			fmt.Println("Error al codificar gastos", err)
+		sortColumn := r.URL.Query().Get("sort")
+		sortOrder := r.URL.Query().Get("order")
+
+		if sortOrder == "" {
+			sortOrder = "asc"
+		}
+
+		sort.Slice(gastos, func(i, j int) bool {
+			g1, g2 := gastos[i], gastos[j]
+
+			menor := false
+			switch sortColumn {
+			case "monto":
+				m1, _ := strconv.ParseFloat(g1.Monto, 64)
+				m2, _ := strconv.ParseFloat(g2.Monto, 64)
+				menor = m1 < m2
+			case "fecha":
+				menor = g1.Fecha.Before(g2.Fecha)
+			case "categoria":
+				menor = string(g1.Categoria) < string(g2.Categoria)
+			default:
+				return g1.IDGasto < g2.IDGasto
+			}
+
+			if sortOrder == "desc" {
+				return !menor
+			}
+			return menor
+		})
+		if r.Header.Get("HX-Request") == "true" {
+			views.GastosList(gastos, id_usuario, sortColumn, sortOrder).Render(r.Context(), w)
 		} else {
-			fmt.Println("Lista de gastos:", gastos)
+			usuario, _ := queries.GetUsuario(r.Context(), id_usuario)
+			views.Estructura(usuario, gastos, id_usuario).Render(r.Context(), w)
 		}
 	case http.MethodPost:
 		err := r.ParseForm()
@@ -33,7 +63,6 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error procesando formulario", 400)
 			return
 		}
-		id_usuario := r.Context().Value("userID").(int32)
 		monto := r.FormValue("monto")
 		medio_de_pago := r.FormValue("medio_de_pago")
 		fechaStr := r.FormValue("fecha")
@@ -70,7 +99,7 @@ func GastosHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Set("Content-Type", "text/html")
-		views.GastosList(gastos, int32(id_usuario)).Render(r.Context(), w)
+		views.GastosList(gastos, int32(id_usuario), "", "").Render(r.Context(), w)
 	}
 }
 

@@ -5,34 +5,50 @@ import (
     "fmt"
 )
 
-templ GastosList(gastos []sqlc.Gasto, id int32) {
+templ GastosList(gastos []sqlc.Gasto, id int32, sort string, order string) {
     <div id="gastos-list-container">
         <h2>Gastos del Usuario</h2>
 
         if id == -1 {
-                <p>Seleccione un usuario para ver sus gastos.</p>
+            <p>Seleccione un usuario.</p>
         } else if len(gastos) == 0 {
-                <p>Este usuario no tiene gastos registrados.</p>
+            <p>No hay gastos registrados.</p>
         } else {
             <div class="gastos-header">
-                <span>Categoría</span>
-                <span>Monto</span>
-                <span>Fecha</span>
+                <span class="sortable-header" 
+                      hx-get={ string(templ.SafeURL(fmt.Sprintf("/gastos?sort=categoria&order=%s", getOrder("categoria", sort, order)))) }
+                      hx-target="#gastos-list-container"
+                      hx-swap="outerHTML">
+                    Categoría { getFlecha("categoria", sort, order) }
+                </span>
+
+                <span class="sortable-header"
+                      hx-get={ string(templ.SafeURL(fmt.Sprintf("/gastos?sort=monto&order=%s", getOrder("monto", sort, order)))) }
+                      hx-target="#gastos-list-container"
+                      hx-swap="outerHTML">
+                    Monto { getFlecha("monto", sort, order) }
+                </span>
+
+                <span class="sortable-header"
+                      hx-get={ string(templ.SafeURL(fmt.Sprintf("/gastos?sort=fecha&order=%s", getOrder("fecha", sort, order)))) }
+                      hx-target="#gastos-list-container"
+                      hx-swap="outerHTML">
+                    Fecha { getFlecha("fecha", sort, order) }
+                </span>
+
                 <span>Acción</span>
             </div>
             
             <ul id="gastos-list">
                 for _, gasto := range gastos {
                     <li>
-                        <span>{ gasto.Categoria }</span>
-                        <span>{ gasto.Monto }</span>
-                        <span>{ gasto.Fecha.Format("02/01/2006 15:04") }</span>
-                        <button
-                            class="delete-btn"
-                            hx-delete={ templ.SafeURL(fmt.Sprintf("/gastos/%d", gasto.IDGasto)) }
-                            hx-target="closest li"
-                            hx-swap="outerHTML"
-                        >
+                        <span>{ string(gasto.Categoria) }</span>
+                        <span>${ gasto.Monto }</span>
+                        <span>{ gasto.Fecha.Format("02/01/2006") }</span>
+                        <button class="delete-btn"
+                                hx-delete={ string(templ.SafeURL(fmt.Sprintf("/gastos/%d", gasto.IDGasto))) }
+                                hx-target="closest li"
+                                hx-swap="outerHTML">
                             Eliminar
                         </button>
                     </li>
@@ -40,4 +56,24 @@ templ GastosList(gastos []sqlc.Gasto, id int32) {
             </ul>
         }
     </div>
+}
+
+func getOrder(colName, currentSort, currentDir string) string {
+    if colName != currentSort {
+        return "asc"
+    }
+    if currentDir == "asc" {
+        return "desc"
+    }
+    return "asc"
+}
+
+func getFlecha(colName, currentSort, currentDir string) string {
+    if colName != currentSort {
+        return ""
+    }
+    if currentDir == "asc" {
+        return " ▲"
+    }
+    return " ▼"
 }
